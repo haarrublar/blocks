@@ -19,6 +19,7 @@ def register_events(bot_manager):
         
     SPAWN_RADIUS = 15
     tracking_flag = {"active": False}
+    inspawn_alert = {"value": None}
     @On(bot, "entitySpawn")
     def on_entity_spawn(this, entity):
         time.sleep(0.7)
@@ -31,7 +32,7 @@ def register_events(bot_manager):
             tracking_flag['active'] = False
             time.sleep(0.2)
             
-            tracking_flag['active'] = True            
+            tracking_flag['active'] = True  
             def radar_loop():
                 while tracking_flag['active']:
                     try:
@@ -41,6 +42,13 @@ def register_events(bot_manager):
                         
                         if distance <= SPAWN_RADIUS:
                             bot_manager.gaze_manager.look_at_entity(entity)
+                            if inspawn_alert['value'] != True:
+                                print(f"{entity.username} inside the spawn zone")
+                                inspawn_alert['value'] = True
+                        else:
+                            if inspawn_alert['value'] != False:
+                                print(f"{entity.username} outside the spawn zone")
+                                inspawn_alert['value'] = False
                     except Exception as e:
                         print(f"Tracking error: {e}")
                         break
