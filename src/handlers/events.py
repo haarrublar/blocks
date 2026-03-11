@@ -1,5 +1,6 @@
 from javascript import On
 import time
+import threading
 from src.handlers.aux_functions import get_distance
 
 def register_events(bot_manager):
@@ -16,24 +17,43 @@ def register_events(bot_manager):
         welcome_msg = "I got connected! Let's start the adventure."
         bot.chat(welcome_msg)
         
-    SPAWN_RADIUS = 20
+    SPAWN_RADIUS = 15
+    tracking_flag = {"active": False}
     @On(bot, "entitySpawn")
     def on_entity_spawn(this, entity):
-        time.sleep(1)
+        time.sleep(0.7)
+        
         list_players = list(bot.players)
         if entity.type == 'player' and entity.username != bot.username and len(list_players) == 2:
             entity_name1 = str(list_players[0]).strip("'")
             entity_name2 = str(list_players[1]).strip("'")
             
-            distance = get_distance(bot.players[entity_name1].entity.position, bot.players[entity_name2].entity.position)
+            tracking_flag['active'] = False
+            time.sleep(0.2)
             
-            if distance <= SPAWN_RADIUS:
-                print("close")
-
-        
+            tracking_flag['active'] = True            
+            def radar_loop():
+                while tracking_flag['active']:
+                    try:
+                        distance = get_distance(
+                            bot.players[entity_name1].entity.position, bot.players[entity_name2].entity.position
+                        )
+                        
+                        if distance <= SPAWN_RADIUS:
+                            bot_manager.gaze_manager.look_at_entity(entity)
+                    except Exception as e:
+                        print(f"Tracking error: {e}")
+                        break
+                    time.sleep(0.2)
+            t = threading.Thread(target=radar_loop, daemon=True)
+            t.start()
+            
+    @On(bot, "entityGone")
+    def on_entity_gone(this, entity):
+        """Check if the entity (not bot) is on the server. If not stops the radar while loop"""
         if entity.type == 'player' and entity.username != bot.username:
-            print('confirmed')
-            # bot_manager.gaze_manager.look_at_entity(entity)
+            tracking_flag["active"] = False
+            print(f"{entity.username} left, stopped tracking")
         
         
     @On(bot, 'chat')

@@ -6,3 +6,4 @@ def get_distance(bot_location, entity_location):
         (bot_location['y'] - entity_location['y']) ** 2 + 
         (bot_location['z'] - entity_location['z']) ** 2  
     )
+    
