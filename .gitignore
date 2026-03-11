@@ -1,0 +1,8 @@
+# Minecraft server
+server/
+*.jar
+
+# Python
+__pycache__/
+*.pyc
+.DS_Store
