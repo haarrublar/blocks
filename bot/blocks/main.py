@@ -1,15 +1,19 @@
 import sys
 import os
+import threading  
 
-# This ensures Python can find your 'src' folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
-from src.blocks.client import MinecraftBot
-from src.config import BOT_OPTIONS
+from bot.mcp.mcp_bridge import start_bridge
+
+
+from bot.blocks.client import MinecraftBot
+from bot.config import BOT_OPTIONS
 
 def run():
-    print('Startin APP...')
+    print('Starting APP...')
     
+    threading.Thread(target=start_bridge, daemon=True).start()
     bot_instance = MinecraftBot(BOT_OPTIONS)
     
     while True:

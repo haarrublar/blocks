@@ -1,7 +1,7 @@
 from javascript import On
 import time
 import threading
-from src.handlers.aux_functions import get_distance
+from bot.handlers.aux_functions import get_distance
 
 def register_events(bot_manager):
     
@@ -29,7 +29,7 @@ def register_events(bot_manager):
         ).start()
         
     def _entity_spawn(entity):
-        time.sleep(0.7)
+        time.sleep(0.5)
         
         list_players = list(bot.players)
         if entity.type == 'player' and entity.username != bot.username and len(list_players) == 2:
@@ -63,8 +63,6 @@ def register_events(bot_manager):
             t = threading.Thread(target=radar_loop, daemon=True)
             t.start()
         
-
-
     @On(bot, 'chat')
     def handleMsg(this, sender, message, *args):
         # The following rules will apply for all written interactions in between the users and the bot. Doing so, we reduce the possible infinite loops or confusion in the system.
@@ -81,22 +79,7 @@ def register_events(bot_manager):
         if "HI" in message:
             bot.chat("hi".capitalize())
             
-            
-    @On(bot, "messagestr")
-    def activate_ui(this, message, messagePosition, jsonMsg, sender, verified=None):
-        threading.Thread(
-            target=_activate_ui, 
-            args=(message, messagePosition),
-            daemon=True
-        ).start()
-        
-    def _activate_ui(message, messagePosition):
-        start = time.time()
-        if messagePosition == "chat":
-            print(f"discovered {message}")
-        end = time.time()
-        print(end-start)
-        
+
         
     @On(bot, "entityGone")
     def on_entity_gone(this, entity):

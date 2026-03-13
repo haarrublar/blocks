@@ -1,9 +1,9 @@
 from javascript import require
-from src.config import BOT_OPTIONS
-from src.handlers.events import register_events
-# from src.buildOP.buildoperator import register_builder
-from src.actions.pathfinder import PathFinderManager
-from src.actions.gaze import GazeManager
+from bot.config import BOT_OPTIONS
+from bot.handlers.events import register_events
+from bot.buildOP.buildoperator import register_builder
+from bot.actions.pathfinder import PathFinderManager
+from bot.actions.gaze import GazeManager
 
 class MinecraftBot:
     
@@ -20,4 +20,4 @@ class MinecraftBot:
         self.gaze_manager = GazeManager(self)
         
         register_events(self)
-        # register_builder(self)
+        register_builder(self)
