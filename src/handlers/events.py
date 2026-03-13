@@ -21,7 +21,14 @@ def register_events(bot_manager):
     tracking_flag = {"active": False}
     inspawn_alert = {"value": None}
     @On(bot, "entitySpawn")
-    def on_entity_spawn(this, entity):
+    def entity_spawn(this, entity):
+        threading.Thread(
+            target=_entity_spawn,
+            args=(entity,),
+            daemon=True
+        ).start()
+        
+    def _entity_spawn(entity):
         time.sleep(0.7)
         
         list_players = list(bot.players)
@@ -55,15 +62,9 @@ def register_events(bot_manager):
                     time.sleep(0.2)
             t = threading.Thread(target=radar_loop, daemon=True)
             t.start()
-            
-    @On(bot, "entityGone")
-    def on_entity_gone(this, entity):
-        """Check if the entity (not bot) is on the server. If not stops the radar while loop"""
-        if entity.type == 'player' and entity.username != bot.username:
-            tracking_flag["active"] = False
-            print(f"{entity.username} left, stopped tracking")
         
-        
+
+
     @On(bot, 'chat')
     def handleMsg(this, sender, message, *args):
         # The following rules will apply for all written interactions in between the users and the bot. Doing so, we reduce the possible infinite loops or confusion in the system.
@@ -80,3 +81,26 @@ def register_events(bot_manager):
         if "HI" in message:
             bot.chat("hi".capitalize())
             
+            
+    @On(bot, "messagestr")
+    def activate_ui(this, message, messagePosition, jsonMsg, sender, verified=None):
+        threading.Thread(
+            target=_activate_ui, 
+            args=(message, messagePosition),
+            daemon=True
+        ).start()
+        
+    def _activate_ui(message, messagePosition):
+        start = time.time()
+        if messagePosition == "chat":
+            print(f"discovered {message}")
+        end = time.time()
+        print(end-start)
+        
+        
+    @On(bot, "entityGone")
+    def on_entity_gone(this, entity):
+        """Check if the entity (not bot) is on the server. If not stops the radar while loop"""
+        if entity.type == 'player' and entity.username != bot.username:
+            tracking_flag["active"] = False
+            print(f"{entity.username} left, stopped tracking")
