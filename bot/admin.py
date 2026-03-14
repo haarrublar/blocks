@@ -4,8 +4,8 @@ from .models import AgentInteraction , Player
 
 @admin.register(Player)
 class AgentInteractionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'is_connected', 'last_seen') 
-    list_filter = ('username',)
+    list_display = ('id', 'username', 'player_type', 'is_connected', 'last_seen') 
+    list_filter = ('username','player_type')
     search_fields = ('is_connected',)
     
     

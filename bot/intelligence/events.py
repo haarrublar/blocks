@@ -1,6 +1,7 @@
 from javascript import On
 import time
 import threading
+import requests
 from bot.utils.aux_functions import get_distance
 
 def register_events(bot_manager):
@@ -81,9 +82,41 @@ def register_events(bot_manager):
             
 
         
-    @On(bot, "entityGone")
-    def on_entity_gone(this, entity):
-        """Check if the entity (not bot) is on the server. If not stops the radar while loop"""
-        if entity.type == 'player' and entity.username != bot.username:
+    @On(bot, "playerLeft")
+    def on_player_left(this, player):
+        username = player['username']
+        
+        if username != bot.username:
             tracking_flag["active"] = False
-            print(f"{entity.username} left, stopped tracking")
+            print(f"{username} disconnected, stopping radar thread.")
+        else:
+            print(f"Bot ({username}) is leaving the server.")
+
+        p_type = 'B' if username == bot.username else 'H'
+        
+        try:
+            payload = {
+                "username": username,
+                "is_connected": False,
+                "player_type": p_type
+            }
+            requests.post('http://127.0.0.1:8000/bot/players/', json=payload, timeout=2)
+        except Exception as e:
+            print(f"Failed to report disconnect for {username}: {e}")
+            
+    @On(bot, "playerJoined")
+    def on_player_joined(this, player):
+        username = player['username']
+        p_type = 'B' if username == bot.username else 'H'
+        print(f"REPORT: {username} ({'Bot' if p_type == 'B' else 'Human'}) joined.")
+
+        try:
+            payload = {
+                "username": username,
+                "is_connected": True,
+                "player_type": p_type
+            }
+            requests.post('http://127.0.0.1:8000/bot/players/', json=payload, timeout=2)
+        except Exception as e:
+            print(f"Failed to report join for {username}: {e}")
+            

@@ -8,6 +8,7 @@ class PlayerSerializer(serializers.ModelSerializer):
         model = Player
         fields = [
             'username',
+            'player_type',
             'is_connected',
             'last_seen'
         ]

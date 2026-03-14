@@ -12,12 +12,14 @@ from rest_framework.response import Response
 @permission_classes([AllowAny])
 def player_view(request):
     if request.method == 'GET':
-        tasks = Player.objects.all()
-        serializer = PlayerSerializer(tasks, many=True)
+        players = Player.objects.all()
+        serializer = PlayerSerializer(players, many=True)
         return Response(serializer.data)
 
     if request.method == 'POST':
-        serializer = PlayerSerializer(data=request.data)
+        username = request.data.get('username')
+        instance = Player.objects.filter(username=username).first()
+        serializer = PlayerSerializer(instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

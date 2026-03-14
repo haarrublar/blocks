@@ -2,7 +2,17 @@ from django.db import models
 
 
 class Player(models.Model):
+    PLAYER_TYPE = {
+        "B": "Bot",
+        "H": "Human"
+    }
     username = models.CharField(max_length=100, unique=True)
+    player_type = models.CharField(
+        max_length=1, 
+        choices=PLAYER_TYPE,
+        null=True, 
+        blank=True
+    )
     is_connected = models.BooleanField(default=False)
     last_seen = models.DateTimeField(auto_now=True)
 
