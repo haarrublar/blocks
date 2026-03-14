@@ -2,7 +2,25 @@
 server/
 *.jar
 
-# Python
+# Django-specific
+db.sqlite3
+*.log
+local_settings.py
+media/
+staticfiles/
+
+# Python / uv
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
 .DS_Store
+.venv/
+uv.lock
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
