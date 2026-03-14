@@ -1,7 +1,7 @@
 from javascript import On
 import time
 import threading
-from bot.handlers.aux_functions import get_distance
+from bot.utils.aux_functions import get_distance
 
 def register_events(bot_manager):
     

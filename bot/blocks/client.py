@@ -1,9 +1,9 @@
 from javascript import require
 from bot.config import BOT_OPTIONS
-from bot.handlers.events import register_events
-from bot.buildOP.buildoperator import register_builder
-from bot.actions.pathfinder import PathFinderManager
-from bot.actions.gaze import GazeManager
+from bot.intelligence.events import register_events
+from bot.intelligence.buildoperator import register_builder
+from bot.behaviors.pathfinder import PathFinderManager
+from bot.behaviors.gaze import GazeManager
 
 class MinecraftBot:
     
