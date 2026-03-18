@@ -64,21 +64,21 @@ def register_events(bot_manager):
             t = threading.Thread(target=radar_loop, daemon=True)
             t.start()
         
-    @On(bot, 'chat')
-    def handleMsg(this, sender, message, *args):
+    @On(bot, 'messagestr')
+    def handleMsg(this, message, messagePosition, jsonMsg, sender, *args):
+        try:
         # The following rules will apply for all written interactions in between the users and the bot. Doing so, we reduce the possible infinite loops or confusion in the system.
         # Rule 1: Only process strictly uppercase commands (The Protocol)
         # Rule 2: Identity Guard (Using extraction to avoid type mismatch)
         # Rule 3: Execution & Capitalized Reply
         # print(bot.players['haarrublar']['entity']['position'])
-        if not message.isupper():
-            return
-            
-        if str(sender) == bot.username:
-            return
-
-        if "HI" in message:
-            bot.chat("hi".capitalize())
+            raw_message = message.split(">", 1)[1].strip()
+            if messagePosition == "chat" and raw_message == "pos":
+                print(bot.entity.position)
+                # print(bot.username)
+        except Exception as e:
+            print(f"Error in handleMsg: {e}")
+        # bot.chat("hi".capitalize())
             
 
         
