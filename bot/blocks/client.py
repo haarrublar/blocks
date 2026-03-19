@@ -1,23 +1,28 @@
-from javascript import require
+import requests
 from bot.config import BOT_OPTIONS
-from bot.intelligence.events import register_events
-from bot.intelligence.buildoperator import register_builder
-from bot.behaviors.pathfinder import PathFinderManager
-from bot.behaviors.gaze import GazeManager
 
 class MinecraftBot:
-    
     def __init__(self, BOT_OPTIONS):
-        self.mineflayer = require('mineflayer')
-        self.pathfinder_plugin = require('mineflayer-pathfinder')
-        self.data_plugin = require('minecraft-data')
-        self.vec3_plugin = require('vec3')
+        self.host = "http://localhost:3000"
+        self.bot_options = BOT_OPTIONS
+        self.is_connected = False
 
-        self.bot = self.mineflayer.createBot(BOT_OPTIONS)
-        self.bot.loadPlugin(self.pathfinder_plugin.pathfinder)
+    def start_bot(self):
+            try:
+                print("Requesting JS to start Minecraft bot...")
+                requests.post(f"{self.host}/start", json=self.bot_options)
+                self.is_connected = True
+            except Exception as e:
+                print(f"Could not connect to JS Engine: {e}")
+                
+    def check_connection(self):
+            try:
+                response = requests.get(f"{self.host}/status", timeout=1)
+                if response.status_code == 200:
+                    data = response.json()
+                    if not data.get('bot_online'):
+                        print("JS Engine lost the bot (Restart detected). Re-initializing...")
+                        self.start_bot()
+            except requests.exceptions.ConnectionError:
+                print("JS Engine is currently restarting (Nodemon)...")
         
-        self.pathfinder_manager = PathFinderManager(self)
-        self.gaze_manager = GazeManager(self)
-        
-        register_events(self)
-        register_builder(self)
