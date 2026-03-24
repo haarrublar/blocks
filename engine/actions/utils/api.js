@@ -45,17 +45,29 @@ async function saveBuildTask(playerUsername, ppCoordinanates, commandType, messa
 async function triggerAIRequest(taskId, ppCoordinanates, instruction) {
     const payload = {
         task_id: taskId,
-        coordinates: ppCoordinanates,
+        player_coordinates: ppCoordinanates,
         task_description: instruction,
     };
     try {
         const response = await axios.post(
             'http://127.0.0.1:8000/bot/process-ai/',
             payload,
-            { timeout:2000 }
+            { timeout: 2000 }
         );
+        return response.data;
     } catch (error) {
-        console.log(`[AI Error] Task #${taskId}:`, error.response?.data || error.message);
+        const data = error.response?.data;
+
+        if (typeof data === "string" && data.trim().startsWith("<")) {
+            // Django error page — save and open in browser
+            const errorPath = `/tmp/django_error_${taskId}.html`;
+            require("fs").writeFileSync(errorPath, data);
+            require("child_process").exec(`open ${errorPath}`);
+            console.error(`[AI Error] Task #${taskId}: Django error opened in browser`);
+        } else {
+            console.error(`[AI Error] Task #${taskId}:`, data || error.message);
+        }
+
         return null;
     }
 }

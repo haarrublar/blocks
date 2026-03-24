@@ -20,14 +20,14 @@ async function parseBuildPlanningRequest(bot,message, messagePosition, jsonMsg, 
             z: Math.round(playerPosition.z)
         }
             
-        // const taskId = await saveBuildTask(player, ppCoordinanates, commandType,instruction)
-        // if (taskId) {
-        //     console.log(`[Pipeline] Task #${taskId} initialized. Sending to Claude`)
+        const taskId = await saveBuildTask(player, ppCoordinanates, commandType,instruction)
+        if (taskId) {
+            console.log(`[Pipeline] Task #${taskId} initialized. Sending to Claude`)
 
-        //     await triggerAIRequest(taskId, ppCoordinanates, instruction);
+            await triggerAIRequest(taskId, ppCoordinanates, instruction);
 
-        //     console.log(`[Pipeline] Task #${taskId} complete`)
-        // }
+            console.log(`[Pipeline] Task #${taskId} complete`)
+        }
     };
 
 };
