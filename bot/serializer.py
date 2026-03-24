@@ -7,6 +7,7 @@ class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
         fields = [
+            'id',
             'username',
             'player_type',
             'is_connected',
@@ -16,14 +17,21 @@ class PlayerSerializer(serializers.ModelSerializer):
 
 class AgentInteractionSerializer(serializers.ModelSerializer):
     
+    player = serializers.SlugRelatedField(
+        slug_field = 'username',
+        queryset = Player.objects.all()
+    )
+    
     class Meta:
         model = AgentInteraction
         fields = [
+            'id',
+            'player',
             'timestamp',
             'player_id',
             'raw_prompt',
             'llm_reasoning',
-            'action_playload',
+            'action_payload',
             'task_type'
         ]
      

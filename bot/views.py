@@ -1,3 +1,5 @@
+import sys, os
+
 from django.shortcuts import render
 
 from .models import AgentInteraction, Player
@@ -7,6 +9,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from rest_framework.response import Response
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from .utils.build_api import ask_claude_build
 
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
@@ -25,7 +30,7 @@ def player_view(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PATCH'])
 @permission_classes([AllowAny])
 def agent_interaction_view(request):
     if request.method == 'GET':
@@ -39,4 +44,45 @@ def agent_interaction_view(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    if request.method == 'PATCH':
+        task_id = request.datag.get('id')
+        
+        try:
+            task = AgentInteraction.objects.get(pk=task_id)
+        except AgentInteraction.DoesNotExist:
+            return Response({"error" : "Task not found"}, status=404)
+        
+        serializer = AgentInteractionSerializer(
+            task, 
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def process_ai_build(request):
+    task_id = request.data.get('task_id')
+    player_coordinates = request.data.get('coordinates')
+    task_description = request.data.get('raw_prompt')
+    
+    try:
+        interaction = AgentInteraction.objects.get(pk=task_id)
+        ai_data = ask_claude_build(task_id, player_coordinates, task_description)
+        interaction.llm_reasoning = ai_data['llm_reasoning']
+        interaction.action_payload = ai_data['action_payload']
+        interaction.save()
+        
+        return Response({
+            "status" : "success",
+            "commands" : ai_data['action_payload']
+        })
+    except AgentInteraction.DoesNotExist:
+        return Response({
+            "error": "Task ID not found"
+        }, status=404)
 

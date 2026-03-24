@@ -1,4 +1,5 @@
-const { updateDjangoPlayer, trackingFlag, botOptions } = require("./utils");
+const { trackingFlag, botOptions } = require("../utils/utils");
+const { updateDjangoPlayer } = require("./../utils/api")
 
 function setupCoreBehaviors(bot) {
 

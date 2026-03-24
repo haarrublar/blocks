@@ -29,8 +29,16 @@ class AgentInteraction(models.Model):
         blank=True
     )
     raw_prompt = models.TextField()
-    llm_reasoning = models.TextField(help_text="General LLM answer from the building instructions")
-    action_playload = models.TextField(help_text="Specific Minecraft commands to build based on the responses from general instructions")
+    llm_reasoning = models.TextField(
+        null=True, 
+        blank=True,
+        help_text="General LLM answer from the building instructions"
+    )
+    action_payload = models.TextField(
+        null=True, 
+        blank=True,
+        help_text="Specific Minecraft commands to build based on the responses from general instructions"
+    )
     task_type = models.CharField(max_length=20, default="building")
     timestamp = models.DateTimeField(auto_now_add=True)
     

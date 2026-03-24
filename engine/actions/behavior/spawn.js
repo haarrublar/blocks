@@ -1,4 +1,4 @@
-const { trackingFlag } = require('./utils')
+const { trackingFlag } = require('../utils/utils')
 const SPAWN_RADIUS = 19;
 
 

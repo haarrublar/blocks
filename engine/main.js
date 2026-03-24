@@ -5,6 +5,7 @@ app.use(express.json());
 
 const { setupCoreBehaviors } = require('./actions/behavior/core')
 const { spawningPlayers } = require('./actions/behavior/spawn')
+const { generateBuildPlan } = require('./actions/behavior/chat')
 
 let bot;
 
@@ -18,8 +19,10 @@ app.post('/start', (req, res) => {
     const options = req.body;
     bot = mineflayer.createBot(options);
     
-    setupCoreBehaviors(bot)
-    spawningPlayers(bot)
+    setupCoreBehaviors(bot);
+    spawningPlayers(bot);
+    generateBuildPlan(bot);
+    
 
     res.json({ status: "Bot starting..." });
 });
