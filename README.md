@@ -1,6 +1,3 @@
 ## Paper:
 
-1. Download Paper server (1.21.11-27)
-2. Put it inside /server folder.
-3. Run server once to generate world.
-4. Start bot.
+This integration is working just fine, defining a conversation in between the Minecraft bot and Claude for constructing buildings. It needs improvement. The function need improvement. Those were thought from a specific position in the ground, and the need to not building on top, next or below the player coordinates, which can be modified just removing the satefy buffer and creating a Minecraft Function to execute all functions at once instead.
