@@ -1,50 +1,60 @@
-import math
-
-def get_cylinder_points(x, y, z, r, h, s, quad):
+def get_cylinder_points(x, y, z, r, h, quad):
     """
-    Variables: r (radius), h (height), s (buffer), quad (NW, NE, SW, SE)
-    Functionality: Returns a list of (x, y, z) points forming a solid or hollow cylinder.
+    Variables: r (radius), h (height), quad (NW, NE, SW, SE)
+    Anchor (x, z) is the corner of the cylinder's 2R+1 bounding box.
     """
     sx = 1 if "E" in quad else -1
     sz = 1 if "S" in quad else -1
     
-    xc = x + (sx * (r + s + 1))
-    zc = z + (sz * (r + s + 1))
+    xc = x + (sx * r)
+    zc = z + (sz * r)
+    
     points = []
+    threshold = (r + 0.5)**2 
     
     for dy in range(h):
         for dx in range(-r, r + 1):
             for dz in range(-r, r + 1):
-                if dx**2 + dz**2 <= (r + 0.5)**2:
+                if dx**2 + dz**2 <= threshold:
                     points.append((xc + dx, y + dy, zc + dz))
     return points
 
-
-def build_cylinder(x, y, z, r, h, s=4, quad='NE', 
-                   material="red_concrete", hollow=True, foundation=True):
-    """
-    Creates a diamond-shaped (rhombus) cylinder.
-    Uses a solid shell pass and an inner 'air' pass for perfect hollowing.
-    """
-    y_start = (y - 1) if (foundation or hollow) else y
-    y_end = y_start + (h - 1)
+def build_cylinder(x, y, z, r, h, quad='NE', material="concrete", color=None, hollow=False):
+    # Standardized: y is the base layer.
+    y_start = y
+    y_end = y + (h - 1)
+    
+    if color and material not in ["stone", "obsidian", "glowstone", "air"]:
+        full_id = f"{color}_{material}"
+    else:
+        full_id = material
     
     sx = 1 if "E" in quad else -1
     sz = 1 if "S" in quad else -1
-    xc = x + (sx * (r + s + 1))
-    zc = z + (sz * (r + s + 1))
+    
+    xc = x + (sx * r)
+    zc = z + (sz * r)
     
     commands = []
 
     for dx in range(-r, r + 1):
         z_width = r - abs(dx)
-        x_pos = xc + dx
-        commands.append(f"/fill {x_pos} {y_start} {zc - z_width} {x_pos} {y_end} {zc + z_width} {material}")
+        curr_x = xc + dx
+        commands.append(f"/fill {curr_x} {y_start} {zc - z_width} {curr_x} {y_end} {zc + z_width} {full_id}")
 
     if hollow and r > 0:
         for dx in range(-(r - 1), r):
             z_inner = (r - 1) - abs(dx)
-            x_pos = xc + dx
-            commands.append(f"/fill {x_pos} {y_start + 1} {zc - z_inner} {x_pos} {y_end} {zc + z_inner} air")
+            curr_x = xc + dx
+            commands.append(f"/fill {curr_x} {y_start + 1} {zc - z_inner} {curr_x} {y_end} {zc + z_inner} air")
 
-    return commands
+    bounds = {
+        "x_min": xc - r, "x_max": xc + r,
+        "z_min": zc - r, "z_max": zc + r,
+        "y_min": y_start, "y_max": y_end,
+        "top": y_end + 1,
+        "center_x": xc, "center_z": zc
+    }
+
+    return {"commands": commands, "bounds": bounds}
+

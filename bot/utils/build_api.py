@@ -3,16 +3,17 @@ import os
 import json
 import uuid
 from dotenv import load_dotenv
+from build.prompts.prompts import BUILD_PROMPT
 from build.tools import TOOLS
 from build.build_rectangle import build_rectangle
-from build.build_triangle import build_triangle
 from build.build_cylinder import build_cylinder
+
 
 load_dotenv()
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
-PLAYER_COORDS = {"x": 87, "y": -60, "z": -43}
-HISTORY_FILE = "build_history.json"
+PLAYER_COORDS = {"x": -493, "y": 65, "z": 91}
+HISTORY_FILE = "./build/session/session.json"
 
 def load_all_sessions():
     if os.path.exists(HISTORY_FILE):
@@ -21,99 +22,94 @@ def load_all_sessions():
     return {}
 
 def save_all_sessions(all_sessions):
+    os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
     with open(HISTORY_FILE, "w") as f:
         json.dump(all_sessions, f, indent=4)
 
-def ask_claude_build(description: str, session_id: str, all_sessions: dict):
-    history = all_sessions.get(session_id, [])
-    history.append({"role": "user", "content": description})
+def ask_claude_build(description: str, session_id: str = None, all_sessions: dict = None):
+    if all_sessions is None:
+        all_sessions = load_all_sessions()
+    
+    if not session_id:
+        session_id = list(all_sessions.keys())[-1] if all_sessions else str(uuid.uuid4())
 
+    log_entries = all_sessions.get(session_id, [])
+
+    if not log_entries:
+        context_summary = f"Project Start. Initial Player Location: {PLAYER_COORDS}\n"
+    else:
+        context_summary = "Project Status: Continuing build. Use the Building Log bounds for alignment.\n"
+        for entry in log_entries:
+            context_summary += f"- Task: {entry['request']}\n  Bounds: {entry['bounds']}\n"
+
+    full_prompt = f"{context_summary}\nNew Request: {description}"
+    
     response = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=1024,
+        model="claude-sonnet-4-20250514",
+        max_tokens=2048,
         tools=TOOLS,
-        system="You are a Minecraft Architect. Coordinates are pre-loaded. Remember previous dimensions and parameters from the history.",
-        messages=history
+        system=BUILD_PROMPT["system_prompt"],
+        messages=[{"role": "user", "content": full_prompt}]
     )
 
     reasoning = ""
     all_commands = []
-    assistant_content = []
-
-    BUILDERS = {
-        "build_rectangle": build_rectangle,
-        "build_triangle": build_triangle,
-        "build_cylinder": build_cylinder,
-    }
+    final_bounds = {}
+    BUILDERS = {"build_rectangle": build_rectangle, "build_cylinder": build_cylinder}
 
     for content in response.content:
         if content.type == "text":
             reasoning += content.text
-            assistant_content.append({"type": "text", "text": content.text})
-
         elif content.type == "tool_use":
-            args = {**content.input, **PLAYER_COORDS}
-            commands = BUILDERS[content.name](**args)
-            all_commands.extend(commands)
+            args = content.input 
+            
+            result = BUILDERS[content.name](**args)
+            all_commands.extend(result["commands"])
+            final_bounds = result["bounds"]
 
-            assistant_content.append({
-                "type": "tool_use",
-                "id": content.id,
-                "name": content.name,
-                "input": content.input
-            })
-
-            # Flush assistant message before tool_result
-            history.append({"role": "assistant", "content": assistant_content})
-            history.append({
-                "role": "user",
-                "content": [{
-                    "type": "tool_result",
-                    "tool_use_id": content.id,
-                    "content": f"Success. {len(commands)} commands generated."
-                }]
-            })
-            assistant_content = []
-
-    # Append any remaining assistant text after all tool calls
-    if assistant_content:
-        history.append({"role": "assistant", "content": assistant_content})
-
-    all_sessions[session_id] = history
+    new_entry = {
+        "request": description,
+        "reasoning": reasoning.strip(),
+        "bounds": final_bounds,
+        "commands": all_commands
+    }
+    
+    if session_id not in all_sessions:
+        all_sessions[session_id] = []
+    all_sessions[session_id].append(new_entry)
     save_all_sessions(all_sessions)
 
-    return {"llm_reasoning": reasoning, "action_payload": "\n".join(all_commands)}
-
+    return {
+        "llm_reasoning": reasoning, 
+        "action_payload": "\n".join(all_commands), 
+        "session_id": session_id
+    }
 
 if __name__ == "__main__":
-    print("=== Minecraft Architect (Persistent Sessions) ===")
-
+    # 1. LOAD existing sessions from the JSON file first
     all_sessions = load_all_sessions()
-
+    
+    # 2. DECIDE: Do you want to continue the last session or start new?
+    # Logic: If sessions exist, use the most recent key. Otherwise, new ID.
     if all_sessions:
-        current_session_id = list(all_sessions.keys())[-1]
-        print(f"Resuming session: {current_session_id}")
+        active_id = list(all_sessions.keys())[-1]
+        print(f"🔄 Continuing existing session: {active_id}")
     else:
-        current_session_id = str(uuid.uuid4())[:8]
-        print(f"New session: {current_session_id}")
+        active_id = str(uuid.uuid4())
+        print(f"🆕 Starting brand new session: {active_id}")
+    
+    test_request = "from the blue cube you build now build a red cylinder on top of it. make it hollow false and the radius 2, it can be 4 blockk height"
+    
+    print(f"--- 🏗️ Starting Architect Test ---")
+    print(f"Player Position: {PLAYER_COORDS}")
+    print(f"Request: {test_request}\n")
 
     try:
-        while True:
-            msg = input(f"\n[{current_session_id}] You: ").strip()
-            if not msg:
-                continue
-
-            if msg.lower() == "reset":
-                current_session_id = str(uuid.uuid4())[:8]
-                print(f"New session: {current_session_id}")
-                continue
-
-            result = ask_claude_build(msg, current_session_id, all_sessions)
-
-            if result["llm_reasoning"]:
-                print(f"\nArchitect: {result['llm_reasoning']}")
-            if result["action_payload"]:
-                print(f"\n--- COMMANDS ---\n{result['action_payload']}")
-
-    except KeyboardInterrupt:
-        print("\nSession saved. Goodbye!")
+        # 3. PASS the existing dictionary and the active ID
+        # This ensures 'history = all_sessions.get(session_id, [])' finds the old messages
+        result = ask_claude_build(test_request, active_id, all_sessions)
+        
+        print(f"🤔 Reasoning: {result['llm_reasoning']}")
+        print(f"📜 Commands: {result['action_payload']}")
+    except Exception as e:
+        print(f"💥 Test Failed: {e}")

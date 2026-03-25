@@ -1,68 +1,71 @@
 TOOLS = [
     {
         "name": "build_rectangle",
-        "description": "Calculates Minecraft /fill commands for a rectangular structure. Use this for rooms, walls, and towers.",
+        "description": "Calculates Minecraft /fill commands for a rectangular structure. Best for rooms, walls, and floors. Follows syntax: /fill x1 y1 z1 x2 y2 z2 [color]_[block] [mode].",
         "input_schema": {
             "type": "object",
             "properties": {
-                "w": {"type": "integer", "description": "Width of the structure (X-axis)."},
-                "l": {"type": "integer", "description": "Length/Depth of the structure (Z-axis)."},
+                "x": {"type": "integer"}, "y": {"type": "integer"}, "z": {"type": "integer"},
+                "w": {"type": "integer", "description": "Width (X-axis)."},
+                "l": {"type": "integer", "description": "Length/Depth (Z-axis)."},
                 "h": {"type": "integer", "description": "Total height (Y-axis)."},
                 "quad": {
                     "type": "string", 
                     "enum": ["NW", "NE", "SW", "SE"], 
-                    "description": "Direction relative to the player to place the build."
+                    "description": "Growth direction relative to anchor."
                 },
-                "material": {"type": "string", "default": "stone", "description": "Block type (e.g., stone, oak_planks)."},
-                "hollow": {
-                    "type": "boolean", 
-                    "default": True, 
-                    "description": "True to create a room with an interior air space. False for a solid block."
+                "color": {
+                    "type": "string",
+                    "description": "Optional color prefix (e.g., 'blue', 'red', 'lime').",
+                    "enum": ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"]
                 },
-                "foundation": {
-                    "type": "boolean", 
-                    "default": True, 
-                    "description": "True to start the building 1 block deep (y-1) for a clean floor."
-                }
+                "material": {
+                    "type": "string",
+                    "description": "The base block type. If a color is provided, it combines as color_material.",
+                    "enum": [
+                        "stone", "stone_bricks", "cobblestone", "mossy_cobblestone",
+                        "wool", "concrete", "terracotta", "glass", "stained_glass",
+                        "planks", "log", "wood", "bricks", "sandstone",
+                        "obsidian", "glowstone", "sea_lantern", "lapis_block", "gold_block", "air"
+                    ]
+                },
+                "mode": {
+                    "type": "string",
+                    "default": "replace",
+                    "enum": ["replace", "hollow", "outline", "keep", "destroy"],
+                    "description": "Minecraft fill mode logic."
+                },
+                "hollow": {"type": "boolean", "default": False},
             },
-            "required": ["w", "l", "h", "quad"]
-        }
-    },
-    {
-        "name": "build_triangle",
-        "description": "Calculates Minecraft /fill commands for a triangular structure. Use this for roofs, wedges, and pointed shapes.",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "r": {"type": "integer", "description": "Half-width of the base. Base will be 2r+1 blocks wide."},
-                "h": {"type": "integer", "description": "Total height (Y-axis)."},
-                "quad": {"type": "string", "enum": ["NW", "NE", "SW", "SE"], "description": "Direction relative to player."},
-                "apex_dir": {"type": "string", "enum": ["N", "S"], "description": "Direction the tip of the triangle points."},
-                "material": {"type": "string", "default": "stone", "description": "Block type (e.g., stone, oak_planks)."},
-                "hollow": {"type": "boolean", "default": False, "description": "True for outline only, False for solid."},
-                "foundation": {"type": "boolean", "default": True, "description": "True to dig 1 block down for a clean floor."}
-            },
-            "required": ["r", "h", "quad", "apex_dir"]
+            "required": ["x", "y", "z", "w", "l", "h", "quad", "material"]
         }
     },
     {
         "name": "build_cylinder",
-        "description": "Generates a diamond-shaped (rhombus) cylindrical structure. Uses a 45-degree diagonal grid for an airtight, geometric Minecraft look.",
+        "description": "Generates a rhombus-shaped cylinder. Ideal for towers. Anchor is the quadrant tip.",
         "input_schema": {
             "type": "object",
             "properties": {
-                "r": {"type": "integer", "description": "Radius from the center to the points of the diamond."},
+                "x": {"type": "integer"}, "y": {"type": "integer"}, "z": {"type": "integer"},
+                "r": {"type": "integer", "description": "Radius from center to diamond tips."},
                 "h": {"type": "integer", "description": "Total height (Y-axis)."},
-                "quad": {
+                "quad": {"type": "string", "enum": ["NW", "NE", "SW", "SE"]},
+                "color": {
                     "type": "string", 
-                    "enum": ["NW", "NE", "SW", "SE"], 
-                    "description": "Direction relative to the player."
+                    "enum": ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"]
                 },
-                "material": {"type": "string", "default": "stone", "description": "Block ID (e.g., red_concrete)."},
-                "hollow": {"type": "boolean", "default": True, "description": "True to carve out the interior with air."},
-                "foundation": {"type": "boolean", "default": True, "description": "True to sink the floor 1 block into the ground."}
+                "material": {
+                    "type": "string", 
+                    "enum": [
+                        "stone", "stone_bricks", "cobblestone", "mossy_cobblestone",
+                        "wool", "concrete", "terracotta", "glass", "stained_glass",
+                        "planks", "log", "wood", "bricks", "sandstone",
+                        "obsidian", "glowstone", "sea_lantern", "lapis_block", "gold_block", "air"
+                    ]
+                },
+                "hollow": {"type": "boolean", "default": False},
             },
-            "required": ["r", "h", "quad"]
+            "required": ["x", "y", "z", "r", "h", "quad", "material"]
         }
-    } 
+    }
 ]
