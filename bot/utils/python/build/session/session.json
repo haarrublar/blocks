@@ -64,6 +64,52 @@
             "request": "\nBuild a Roman Colosseum with a Radius 20, Height 3 stone base, a Radius 18, Height 10 hollow stone cylinder on top for walls, two internal tiers of stone stairs for seating by insetting a radius 15 and 13 cylinder respectively, and a central radius 10 sand floor, including 8 equally spaced stone pillars snapped to the outer rim of the base.\n    ",
             "part_name": "Pillar 8 | Roman Colosseum",
             "timestamp": "67a0a25a-b352-41fe-a542-e14e4396b2f5"
+        },
+        {
+            "request": "\nBuild an L-shape building of heigth 8 blocks. Make it hollow and without roof. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.\n    ",
+            "part_name": "Long Wing | L-Shape Building",
+            "timestamp": "46a0b310-86ee-4629-a382-a2f8e898cb58"
+        },
+        {
+            "request": "\nBuild an L-shape building of heigth 8 blocks. Make it hollow and without roof. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.\n    ",
+            "part_name": "Short Wing | L-Shape Building",
+            "timestamp": "10e8caa1-a059-4cb9-a7a5-1bdf6241907b"
+        }
+    ],
+    "6d1083b7-9330-4fa3-ad96-fe0320e90d1d": [
+        {
+            "request": " reset.\nBuild an L-shape building of heigth 8 blocks. Make it hollow and without roof. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.\n    ",
+            "part_name": "Long Wing | L-Shape Building",
+            "timestamp": "e4ecdc72-24af-4f44-b2b6-d3916974dc43"
+        },
+        {
+            "request": " reset.\nBuild an L-shape building of heigth 8 blocks. Make it hollow and without roof. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.\n    ",
+            "part_name": "Short Wing | L-Shape Building",
+            "timestamp": "56cc65f3-17fe-4af1-9219-3ca870b3ce91"
+        }
+    ],
+    "fa63e352-5aae-456f-9b21-bfe6f5932b6e": [
+        {
+            "request": " reset.\nBuild an L-shape building of heigth 8 blocks. Make it hollow and without roof. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.\n    ",
+            "part_name": "Long Wing | L-Shape Building",
+            "timestamp": "9c48cf57-8f82-48e2-9c42-e7b830286cef"
+        },
+        {
+            "request": " reset.\nBuild an L-shape building of heigth 8 blocks. Make it hollow and without roof. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.\n    ",
+            "part_name": "Short Wing | L-Shape Building",
+            "timestamp": "285f2c3b-8f17-415d-b57a-ae2ed240dc52"
+        }
+    ],
+    "0556698a-08c8-4916-858a-e44d71593f0a": [
+        {
+            "request": " reset.\nBuild an L-shape building of heigth 8 blocks. Make it hollow and without ceiling. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.\n    ",
+            "part_name": "Long Wing | L-Shape Building",
+            "timestamp": "3e3d05f6-7615-4a51-9730-40db2c7e121f"
+        },
+        {
+            "request": " reset.\nBuild an L-shape building of heigth 8 blocks. Make it hollow and without ceiling. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.\n    ",
+            "part_name": "Short Wing | L-Shape Building",
+            "timestamp": "4f22e060-2c67-404c-810e-7b29e4674042"
         }
     ]
 }

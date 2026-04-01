@@ -1,5 +1,5 @@
 const { trackingFlag } = require('../utils/utils')
-const SPAWN_RADIUS = 19;
+const SPAWN_RADIUS = 15;
 
 
 function spawningPlayers(bot) {

@@ -540,6 +540,156 @@
                     "/fill 451 -58 -428 451 -46 -428 minecraft:stone replace"
                 ]
             }
+        ],
+        "14": [
+            {
+                "ID": 14,
+                "Name": "Long Wing | L-Shape Building",
+                "Shape": "rectangle",
+                "Dimensions": "30x10x8",
+                "Material": "minecraft:yellow_concrete",
+                "Logic": "Ground Level at Player Coordinates. x_min=-29, x_max=-1, z_min=-134, z_max=-125.",
+                "Status": "PENDING",
+                "boundaries": null,
+                "Commands": []
+            }
+        ],
+        "15": [
+            {
+                "ID": 15,
+                "Name": "Short Wing | L-Shape Building",
+                "Shape": "rectangle",
+                "Dimensions": "10x10x8",
+                "Material": "minecraft:yellow_concrete",
+                "Logic": "Same y_min as ID [14]. Adjacent to long wing without shared wall. x_min=-19, x_max=-10, z_min=-124, z_max=-115.",
+                "Status": "PENDING",
+                "boundaries": null,
+                "Commands": []
+            }
+        ]
+    },
+    "6d1083b7-9330-4fa3-ad96-fe0320e90d1d": {
+        "1": [
+            {
+                "ID": 1,
+                "Name": "Long Wing | L-Shape Building",
+                "Shape": "rectangle",
+                "Dimensions": "30x10x8",
+                "Material": "minecraft:yellow_concrete",
+                "Logic": "Ground Level at Player Coordinates. x_min=-29, x_max=1, z_min=-134, z_max=-125.",
+                "Status": "PENDING",
+                "boundaries": null,
+                "Commands": []
+            }
+        ],
+        "2": [
+            {
+                "ID": 2,
+                "Name": "Short Wing | L-Shape Building",
+                "Shape": "rectangle",
+                "Dimensions": "10x10x8",
+                "Material": "minecraft:yellow_concrete",
+                "Logic": "Same y_min as ID [1]. Adjacent to long wing without shared wall. x_min=-19, x_max=-10, z_min=-124, z_max=-115.",
+                "Status": "PENDING",
+                "boundaries": null,
+                "Commands": []
+            }
+        ]
+    },
+    "fa63e352-5aae-456f-9b21-bfe6f5932b6e": {
+        "1": [
+            {
+                "ID": 1,
+                "Name": "Long Wing | L-Shape Building",
+                "Shape": "rectangle",
+                "Dimensions": "30x10x8",
+                "Material": "minecraft:yellow_concrete",
+                "Logic": "Ground Level at Player Coordinates. x_min=-29, x_max=1, z_min=-134, z_max=-125.",
+                "Status": "COMPLETED",
+                "boundaries": {
+                    "x_min": -29,
+                    "x_max": 1,
+                    "z_min": -134,
+                    "z_max": -125,
+                    "y_min": -61,
+                    "y_max": -54,
+                    "top": -54
+                },
+                "Commands": [
+                    "/fill -29 -61 -134 1 -54 -125 minecraft:yellow_concrete hollow"
+                ]
+            }
+        ],
+        "2": [
+            {
+                "ID": 2,
+                "Name": "Short Wing | L-Shape Building",
+                "Shape": "rectangle",
+                "Dimensions": "10x10x8",
+                "Material": "minecraft:yellow_concrete",
+                "Logic": "Same y_min as ID [1]. Adjacent to long wing without shared wall. x_min=-19, x_max=-10, z_min=-124, z_max=-115.",
+                "Status": "COMPLETED",
+                "boundaries": {
+                    "x_min": -19,
+                    "x_max": -10,
+                    "z_min": -124,
+                    "z_max": -115,
+                    "y_min": -61,
+                    "y_max": -54,
+                    "top": -54
+                },
+                "Commands": [
+                    "/fill -19 -61 -124 -10 -54 -115 minecraft:yellow_concrete hollow"
+                ]
+            }
+        ]
+    },
+    "0556698a-08c8-4916-858a-e44d71593f0a": {
+        "1": [
+            {
+                "ID": 1,
+                "Name": "Long Wing | L-Shape Building",
+                "Shape": "rectangle",
+                "Dimensions": "30x10x8",
+                "Material": "minecraft:yellow_concrete",
+                "Logic": "Ground Level at Player Coordinates. x_min=-35, x_max=-6, z_min=-200, z_max=-191.",
+                "Status": "COMPLETED",
+                "boundaries": {
+                    "x_min": -35,
+                    "x_max": -6,
+                    "z_min": -200,
+                    "z_max": -191,
+                    "y_min": -61,
+                    "y_max": -54,
+                    "top": -54
+                },
+                "Commands": [
+                    "/fill -35 -61 -200 -6 -54 -191 minecraft:yellow_concrete hollow"
+                ]
+            }
+        ],
+        "2": [
+            {
+                "ID": 2,
+                "Name": "Short Wing | L-Shape Building",
+                "Shape": "rectangle",
+                "Dimensions": "10x10x8",
+                "Material": "minecraft:yellow_concrete",
+                "Logic": "Same y_min as ID [1]. Adjacent to long wing without shared wall. x_min=-25, x_max=-16, z_min=-190, z_max=-181.",
+                "Status": "COMPLETED",
+                "boundaries": {
+                    "x_min": -25,
+                    "x_max": -16,
+                    "z_min": -190,
+                    "z_max": -181,
+                    "y_min": -61,
+                    "y_max": -54,
+                    "top": -54
+                },
+                "Commands": [
+                    "/fill -25 -61 -190 -16 -54 -181 minecraft:yellow_concrete hollow"
+                ]
+            }
         ]
     }
 }

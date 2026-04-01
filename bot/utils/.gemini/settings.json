@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "minecraft": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "fastmcp",
+        "fastmcp",
+        "run",
+        "/Users/haarrublar/Documents/study/MANITOBA/research/code-minecraft/minecraftBot/bot/utils/server.py"
+      ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+fill -66 -61 -86 -50 -61 -75 minecraft:yellow_concrete replace
+fill -78 -61 -75 -67 -61 -64 minecraft:yellow_concrete replace
+fill -65 -61 -85 -51 -61 -76 minecraft:yellow_concrete replace
+fill -77 -61 -74 -68 -61 -65 minecraft:yellow_concrete replace
+fill -66 -60 -86 -50 -52 -75 minecraft:yellow_concrete hollow
+fill -66 -52 -86 -50 -52 -75 minecraft:air replace
+fill -78 -60 -75 -67 -52 -64 minecraft:yellow_concrete hollow
+fill -78 -52 -75 -67 -52 -64 minecraft:air replace

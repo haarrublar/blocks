@@ -19,7 +19,7 @@ from build.build_cylinder import build_cylinder
 load_dotenv()
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
-PLAYER_COORDS = {"x": 464, "y": -61, "z": -414}
+PLAYER_COORDS = {"x": -20, "y": -61, "z": -195}
 HISTORY_FILE = "./build/session/session.json"
 TABLE_FILE = "./build/session/components_table.json"
 
@@ -30,12 +30,17 @@ def build_claude(description: str, player_coordinates: dict, session_id: str = N
     all_history = load_json(HISTORY_FILE)
     components_table = load_json(TABLE_FILE)     
     
-    if all_sessions is None:
-        all_sessions = all_history
-    if not session_id:
-        session_id = list(all_sessions.keys())[-1] if all_sessions else str(uuid.uuid4())
     if "reset" in description:
+        # 1. Force a brand new ID
         session_id = str(uuid.uuid4())
+        # 2. CLEAR the history for this specific call so the LLM starts fresh
+        current_context_history = {} 
+        print(f"🧹 Reset detected. Starting fresh session: {session_id}")
+    else:
+        # Use existing logic
+        if not session_id:
+            session_id = list(all_sessions.keys())[-1] if all_sessions else str(uuid.uuid4())
+        current_context_history = all_history
     
     
     claude_decompose(
@@ -110,8 +115,8 @@ if __name__ == "__main__":
         active_id = str(uuid.uuid4())
         print(f"🆕 Starting brand new session: {active_id}")
     
-    test_request = """
-Build a Roman Colosseum with a Radius 20, Height 3 stone base, a Radius 18, Height 10 hollow stone cylinder on top for walls, two internal tiers of stone stairs for seating by insetting a radius 15 and 13 cylinder respectively, and a central radius 10 sand floor, including 8 equally spaced stone pillars snapped to the outer rim of the base.
+    test_request = """ reset.
+Build an L-shape building of heigth 8 blocks. Make it hollow and without ceiling. Additionally to not make any shared walls. The longer side make it three times longer than the shorter. The shorter make it 10 blocks width. Make it yellow and the inner width make it 8 blocks.
     """
     
     print(f"--- 🏗️ Starting Architect Test ---")
