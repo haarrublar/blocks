@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 async function updateDjangoPlayer(username, isConnected, type) {
     const payload = {
@@ -62,7 +62,7 @@ async function triggerAIRequest(taskId, ppCoordinanates, instruction) {
 
 
 
-module.exports = { 
+export { 
     updateDjangoPlayer,
     saveBuildTask,
     triggerAIRequest

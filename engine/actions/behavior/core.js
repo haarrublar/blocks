@@ -1,5 +1,6 @@
-const { trackingFlag, botOptions } = require("../utils/utils");
-const { updateDjangoPlayer } = require("./../utils/api")
+import { trackingFlag, botOptions } from "../utils/utils.js";
+import { updateDjangoPlayer } from "./../utils/api.js";
+
 
 function setupCoreBehaviors(bot) {
 
@@ -13,7 +14,7 @@ function setupCoreBehaviors(bot) {
 
     // bot announcing its connection into the server
     bot.on('spawn', () => {
-        bot.chat("I got connected! Let's start the adventure.");
+        bot.chat("I got connected!");
     });
 
     // checking player online status and updating the API
@@ -39,4 +40,4 @@ function setupCoreBehaviors(bot) {
     })
 }
 
-module.exports = { setupCoreBehaviors };
+export { setupCoreBehaviors };

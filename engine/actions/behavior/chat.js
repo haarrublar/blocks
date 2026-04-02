@@ -1,4 +1,4 @@
-const { saveBuildTask, triggerAIRequest } = require('./../utils/api')
+import { saveBuildTask, triggerAIRequest } from './../utils/api.js';
 
 function generateBuildPlan(bot) {
     bot.on('messagestr', (message, messagePosition, jsonMsg, sender, verified) => {
@@ -32,4 +32,4 @@ async function parseBuildPlanningRequest(bot,message, messagePosition, jsonMsg, 
 
 };
 
-module.exports = { generateBuildPlan };
+export { generateBuildPlan };

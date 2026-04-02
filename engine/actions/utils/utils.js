@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const trackingFlag = { 
     active: false,
@@ -12,7 +12,7 @@ const botOptions = {
     version: '1.21.1'
 };
 
-module.exports = { 
+export { 
     trackingFlag,
     botOptions
 };

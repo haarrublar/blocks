@@ -1,11 +1,13 @@
-const mineflayer = require('mineflayer');
-const express = require('express');
+import mineflayer from 'mineflayer';
+import { pathfinder } from 'mineflayer-pathfinder';
+import express from 'express';
+
 const app = express();
 app.use(express.json());
 
-const { setupCoreBehaviors } = require('./actions/behavior/core')
-const { spawningPlayers } = require('./actions/behavior/spawn')
-const { generateBuildPlan } = require('./actions/behavior/chat')
+import { setupCoreBehaviors } from './actions/behavior/core.js';
+import { spawningPlayers } from './actions/behavior/spawn.js';
+import { guideLogic } from './actions/guide/walkto.js';
 
 let bot;
 
@@ -18,10 +20,12 @@ app.get('/status', (req, res) => {
 app.post('/start', (req, res) => {
     const options = req.body;
     bot = mineflayer.createBot(options);
+
+    bot.loadPlugin(pathfinder);
     
     setupCoreBehaviors(bot);
     spawningPlayers(bot);
-    generateBuildPlan(bot);
+    guideLogic(bot);
     
 
     res.json({ status: "Bot starting..." });
