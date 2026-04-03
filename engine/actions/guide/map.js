@@ -1,16 +1,22 @@
 export const map = {
-    ss: {
-        ss_first_block: { x: 3, y: -60, z: -51 },
-        ss_second_block: { x: 24, y: -60, z: -16 },
-        detail: "Study Space",
+    "Study Space": {
+        "Quiet Study Tables": { 
+            coordinates: { x: 3, y: -60, z: -51 },
+            detail: "Individual desks for silent study and focused work."
+        },
+        "Group Study Area": { 
+            coordinates: { x: 24, y: -60, z: -16 },
+            detail: "Collaborative space with larger tables for group discussions."
+        },
     },
-    gp: {
-        gp_first_block: { x: 21, y: -60, z: -51 },
-        gp_second_block: { x: 21, y: -60, z: -29 },
-        detail: "Government Publications"
+    "Government Publications": {
+        "Reference Shelves": { 
+            coordinates: { x: 21, y: -60, z: -51 },
+            detail: "Collection of official reports, statistics, and public records."
+        },
+        "Archive Section": { 
+            coordinates: { x: 21, y: -60, z: -29 },
+            detail: "Older government documents preserved for research purposes."
+        },
     },
 };
-
-export const mapBuildingsAreas = Object.values(map).flatMap(
-    obj => Object.keys(obj).filter(key => key !== 'detail')
-);
