@@ -18,6 +18,12 @@ __pycache__/
 .venv/
 uv.lock
 
+#js 
+node_modules/
+**/node_modules/
+.DS_Store
+*.wav
+
 # Environments
 .env
 .venv
