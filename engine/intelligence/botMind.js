@@ -1,5 +1,4 @@
 import ollama from 'ollama'; 
-import { CLASSIFIER_PROMPT } from './prompts.js';
 
 async function botPersona(text,role) {
   const response = await ollama.chat({

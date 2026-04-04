@@ -1,9 +1,10 @@
 import pkg from "mineflayer-pathfinder";
 const { Movements, goals } = pkg;
-import { botPersona } from "../utils/botMind.js";
-import { botVoice } from "../utils/voice/voiceManager.js";
-import { GUIDE } from "../utils/prompts.js";
-import { map } from "./map.js";
+
+import { botPersona } from "../intelligence/botMind.js";
+import { botVoice } from "./voiceManager.js";
+import { GUIDE } from "../intelligence/prompts.js";
+import { map } from "../utils/map.js";
 
 function guideLogic(bot) {
   bot.on("messagestr", (message) => {

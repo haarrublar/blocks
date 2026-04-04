@@ -1,6 +1,20 @@
 import { trackingFlag } from "../utils/utils.js";
+import { startVoiceTranscription } from "./playerVoiceManager.js";
 
 const SPAWN_RADIUS = 15;
+let voiceProcess = null;
+
+function handlePlayerVoice(text) {
+  console.log(`[BOT HEARD]: ${text}`)
+}
+
+function stopVoice() {
+  if (voiceProcess) {
+    voiceProcess.kill('SIGKILL');
+    voiceProcess = null;
+    console.log(`voice process shutdown`)
+  }
+}
 
 function spawningPlayers(bot) {
   bot.on("entitySpawn", (entity) => {
@@ -27,7 +41,10 @@ function handleEntitySpawn(bot, entity) {
 
 function startRadarLoop(bot, entity, name1, name2) {
   const interval = setInterval(() => {
-    if (!trackingFlag.active) return clearInterval(interval);
+    if (!trackingFlag.active) {
+      stopVoice()
+      return clearInterval(interval);
+    };
 
     const p1 = bot.players[name1]?.entity?.position;
     const p2 = bot.players[name2]?.entity?.position;
@@ -39,11 +56,16 @@ function startRadarLoop(bot, entity, name1, name2) {
         if (!trackingFlag.inSpawnAlert) {
           console.log(`${entity.username} entered zone`);
           trackingFlag.inSpawnAlert = true;
+
+          if (!voiceProcess) {
+            voiceProcess = startVoiceTranscription(handlePlayerVoice)
+          }
         }
       } else {
         if (trackingFlag.inSpawnAlert) {
           console.log(`${entity.username} exited zone`);
           trackingFlag.inSpawnAlert = false;
+          stopVoice()
         }
         trackingFlag.inSpawnAlert = false;
       }

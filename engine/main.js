@@ -5,9 +5,9 @@ import express from 'express';
 const app = express();
 app.use(express.json());
 
-import { setupCoreBehaviors } from './actions/behavior/core.js';
-import { spawningPlayers } from './actions/behavior/spawn.js';
-import { guideLogic } from './actions/guide/walkto.js';
+import { setupCoreBehaviors } from './behaviors/core.js';
+import { spawningPlayers } from './behaviors/spawn.js';
+import { guideLogic } from './behaviors/walkto.js';
 
 let bot;
 
