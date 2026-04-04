@@ -1,5 +1,5 @@
 import { trackingFlag, botOptions } from "../utils/utils.js";
-import { updateDjangoPlayer } from "./../utils/api.js";
+import { updateDjangoPlayer } from "../intelligence/api.js";
 
 
 function setupCoreBehaviors(bot) {

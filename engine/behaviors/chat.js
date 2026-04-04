@@ -1,4 +1,4 @@
-import { saveBuildTask, triggerAIRequest } from './../utils/api.js';
+import { saveBuildTask, triggerAIRequest } from '../intelligence/api.js';
 
 function generateBuildPlan(bot) {
     bot.on('messagestr', (message, messagePosition, jsonMsg, sender, verified) => {
