@@ -12,6 +12,12 @@ function guideLogic(bot) {
   });
 }
 
+export let currentTask = {
+  areaKey: null,
+  stepKey: null,
+  isPaused: false
+};
+
 let areaIndex = 0;
 let stepIndex = 0;
 let startAreaIndex = 0;
@@ -28,12 +34,10 @@ async function handleGuideLogic(bot, message) {
   if (command[0] !== `<${bot.username}>`) {
     const areas = Object.keys(map);
 
-    const helpKeywords = ["tour", "help", "info"];
-    if (helpKeywords.some((keyword) => instruction === keyword)) {
+    const helpKeywords = ["tour", "help", "information"];
+    if (helpKeywords.some((keyword) => instruction.includes(keyword))) {
       bot.chat(`Welcome to the guided tour ${player}!`);
-      bot.chat(
-        "Commands: 'start' (full tour), 'move to' (pick a building), or 'continue' (next stop).",
-      );
+      bot.chat("Commands: 'start' (full tour), 'move to' (pick a building), or 'continue' (next stop).");
       return;
     }
 
@@ -48,20 +52,17 @@ async function handleGuideLogic(bot, message) {
         stepIndex = 0;
 
         const steps = Object.keys(map[selectedArea]);
-        bot.chat(
-          `Starting tour at ${selectedArea}. We will loop through all buildings!`,
-        );
+        bot.chat(`Starting tour at ${selectedArea}. We will loop through all buildings!`);
         executeMove(bot, selectedArea, steps[stepIndex]);
       }
       return;
     }
 
-    if (instruction === "move to") {
+    if (instruction.includes("move to")) {
       isWaitingForSelection = true;
-      bot.chat(
-        `${player}, please select the building you would like to explore: ${areas.join(", ")}`,
-      );
-    } else if (instruction === "start") {
+      bot.chat(`${player}, please select the building you would like to explore: ${areas.join(", ")}`);
+
+    } else if (instruction.includes("start")) {
       isTourActive = true;
       areaIndex = 0;
       stepIndex = 0;
@@ -69,7 +70,8 @@ async function handleGuideLogic(bot, message) {
       const steps = Object.keys(map[currentAreaKey]);
       bot.chat("Starting the complete tour!");
       executeMove(bot, currentAreaKey, steps[stepIndex]);
-    } else if (instruction === "continue" && isTourActive) {
+
+    } else if (instruction.includes("continue") && isTourActive) {
       let currentAreaKey = areas[areaIndex];
       let steps = Object.keys(map[currentAreaKey]);
 
@@ -88,9 +90,7 @@ async function handleGuideLogic(bot, message) {
         stepIndex = 0;
         currentAreaKey = areas[areaIndex];
         steps = Object.keys(map[currentAreaKey]);
-        bot.chat(
-          `Building finished. Moving to the next stop: ${map[currentAreaKey].detail}`,
-        );
+        bot.chat(`Building finished. Moving to the next stop: ${map[currentAreaKey].detail}`);
       }
 
       executeMove(bot, currentAreaKey, steps[stepIndex]);
@@ -100,11 +100,15 @@ async function handleGuideLogic(bot, message) {
 
 async function executeMove(bot, areaKey, stepKey) {
   try {
+    currentTask.areaKey = areaKey;
+    currentTask.stepKey = stepKey;
+
     const coords = map[areaKey][stepKey]["coordinates"];
     const detail = map[areaKey][stepKey]["detail"];
-    bot.removeAllListeners("goal_reached");
 
+    bot.removeAllListeners("goal_reached");
     bot.chat(`Heading to ${stepKey}...`);
+
     const defaultMove = new Movements(bot);
     defaultMove.canDig = false;
     bot.pathfinder.setMovements(defaultMove);
@@ -116,14 +120,17 @@ async function executeMove(bot, areaKey, stepKey) {
 
     let hasSpoken = false;
     bot.once("goal_reached", async () => {
-      if (hasSpoken) return; 
-      hasSpoken = true;
+      if (hasSpoken) return;
+      if (currentTask.isPaused) return;
+      if (currentTask.areaKey !== areaKey || currentTask.stepKey !== stepKey) return;
 
-      await botVoice(botResponse, 'Samantha'); 
+      hasSpoken = true;
+      await botVoice(botResponse, 'Samantha');
     });
+
   } catch (err) {
     console.error("Movement/Voice error:", err);
   }
 }
 
-export { guideLogic };
+export { guideLogic, handleGuideLogic, executeMove };
