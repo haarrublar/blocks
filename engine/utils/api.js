@@ -14,6 +14,21 @@ async function updateDjangoPlayer(username, isConnected, type) {
     }
 };
 
+async function chat(username, message) {
+    const payload = {
+        // session_id:sessionId,
+        player: username,
+        content: message,
+        // bot_persona: botPersona
+    };
+    try {
+        await axios.post('http://127.0.0.1:8000/bot/chat/', payload, { timeout: 10000 });
+        console.log(`[Django Update]`);
+    } catch (error) {
+        console.log(`[Django Error] ${error.message}`);
+    }
+};
+
 async function saveBuildTask(playerUsername, ppCoordinanates, commandType, message) {
     const payload = {
         player: playerUsername,
@@ -64,6 +79,7 @@ async function triggerAIRequest(taskId, ppCoordinanates, instruction) {
 
 export { 
     updateDjangoPlayer,
+    chat,
     saveBuildTask,
     triggerAIRequest
 };

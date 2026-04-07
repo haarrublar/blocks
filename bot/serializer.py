@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AgentInteraction, Player
+from .models import AgentInteraction, Player, ChatMessages
 
 
 class PlayerSerializer(serializers.ModelSerializer):
@@ -35,3 +35,18 @@ class AgentInteractionSerializer(serializers.ModelSerializer):
             'task_type'
         ]
      
+     
+class ChatMessagesSerializer(serializers.ModelSerializer):
+    
+    player = serializers.SlugRelatedField(
+        slug_field='username',
+        queryset=Player.objects.all()
+    )
+    class Meta:
+        model = ChatMessages
+        fields = [
+            'id',
+            'player',
+            'content',
+            'timestamp'
+        ]

@@ -1,20 +1,26 @@
 import { trackingFlag, botOptions } from "../utils/utils.js";
-import { updateDjangoPlayer } from "../utils/api.js";
-
+import { updateDjangoPlayer, chat } from "../utils/api.js";
 
 function setupCoreBehaviors(bot) {
-
+    
     bot.once('spawn', () => {
         updateDjangoPlayer(bot.username, true, 'B');
+        
+        const originalChat = bot.chat;
+        bot.chat = (message, silent = false) => {
+            if (!silent) {
+                chat(bot.username, message);
+                originalChat.call(bot, message);
+            }
+        };
+        
+        bot.chat("I got connected!", true);
     });
+
+    
     // checking the bot connection
     bot.on('login', () => {
         console.log("Bot connected");
-    });
-
-    // bot announcing its connection into the server
-    bot.on('spawn', () => {
-        bot.chat("I got connected!");
     });
 
     // checking player online status and updating the API
