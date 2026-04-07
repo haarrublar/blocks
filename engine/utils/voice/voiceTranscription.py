@@ -14,6 +14,8 @@ EXTRA_TIME = 0.5
 model = Model(MODEL_PATH)
 rec = KaldiRecognizer(model, SAMPLE_RATE)
 audio_queue = queue.Queue()
+
+caps_on = False
 is_recording = False
 is_padding = False
 
@@ -36,12 +38,15 @@ def audio_callback(indata, frames, time_info, status):
         rec.AcceptWaveform(data)  
 
 def on_press(key):
-    global is_recording, is_padding
+    global is_recording, is_padding, caps_on
+
     if key == keyboard.Key.caps_lock:
-        if not is_recording:
+        caps_on = not caps_on 
+
+        if caps_on:
             is_recording = True
             is_padding = False
-            print("🎙️ Recording...", file=sys.stderr)
+            print("🎙️ Recording (Caps ON)...", file=sys.stderr)
         else:
             is_recording = False
             is_padding = True

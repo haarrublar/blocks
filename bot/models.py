@@ -1,5 +1,5 @@
 from django.db import models
-
+import uuid
 
 class Player(models.Model):
     PLAYER_TYPE = {
@@ -51,28 +51,40 @@ class AgentInteraction(models.Model):
         return f"{self.user_id} | {self.task_type} | {self.timestamp.strftime('%Y-%m-%d %H:%M')}"
     
     
-    
-class ChatMessages(models.Model):
-    # session_id = models.CharField(
-    #     max_length=100,
-    #     blank=True,
-    #     null=True,
-    #     help_text="UUID"
-    # )
+class ChatSession(models.Model):
+    id = models.UUIDField(
+        primary_key=True, 
+        default=uuid.uuid4, 
+        editable=False
+    ) 
     player = models.ForeignKey(
         Player, 
         on_delete=models.CASCADE, 
-        related_name='chat_messages',
-        null=True, 
-        blank=True
+        related_name='sessions',
+    )
+    started_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+            verbose_name = 'Chat Session'
+            verbose_name_plural = 'Chat Sessions'
+            ordering = ['started_at']
+            
+    def __str__(self):
+        return f"{self.session_id} ({self.player})"
+
+    
+class ChatMessages(models.Model):
+    session = models.ForeignKey(
+        ChatSession,
+        on_delete=models.CASCADE,
+        related_name='messages',
+    )
+    sender = models.ForeignKey(
+        Player, 
+        on_delete=models.CASCADE, 
+        related_name='messages',
     )
     content = models.TextField()
-    # bot_persona = models.CharField(
-    #     max_length=50,
-    #     help_text="System Bots Persona Logic",
-    #     null=True, 
-    #     blank=True        
-    # )
     timestamp = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -81,10 +93,8 @@ class ChatMessages(models.Model):
             ordering = ['timestamp']
         
     def __str__(self):
-        name = self.player.username if self.player else "System/Unknown"
-        persona = self.bot_persona if self.bot_persona else "No Persona"
-        return f"{name} ({persona}) : {self.content[:20]}"
-    
+        name = self.sender.username if self.sender else "System/Unknown"
+        return f"{name}: {self.content[:20]}"
     
     
     

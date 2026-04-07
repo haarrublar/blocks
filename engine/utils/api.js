@@ -1,4 +1,6 @@
 import axios from 'axios';
+import fs from 'fs';
+import { exec } from 'child_process';
 
 async function updateDjangoPlayer(username, isConnected, type) {
     const payload = {
@@ -14,18 +16,34 @@ async function updateDjangoPlayer(username, isConnected, type) {
     }
 };
 
-async function chat(username, message) {
+async function createSession(username) {
     const payload = {
-        // session_id:sessionId,
-        player: username,
+        player:username,
+    };
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/bot/chat/sessions/', payload, { timeout: 10000 });
+        console.log(`[Session Created] ${response.data.id}`);
+        return response.data.id;
+    } catch (error) {
+        const html = error.response?.data;
+        fs.writeFileSync('/tmp/django_error.html', typeof html === 'string' ? html : JSON.stringify(html, null, 2));
+        exec('open /tmp/django_error.html');
+    }
+};
+
+async function chat(sessionId, username, message) {
+    const payload = {
+        session:sessionId,
+        sender: username,
         content: message,
-        // bot_persona: botPersona
     };
     try {
         await axios.post('http://127.0.0.1:8000/bot/chat/', payload, { timeout: 10000 });
         console.log(`[Django Update]`);
     } catch (error) {
-        console.log(`[Django Error] ${error.message}`);
+        const html = error.response?.data;
+        fs.writeFileSync('/tmp/django_error.html', typeof html === 'string' ? html : JSON.stringify(html, null, 2));
+        exec('open /tmp/django_error.html');
     }
 };
 
@@ -79,6 +97,7 @@ async function triggerAIRequest(taskId, ppCoordinanates, instruction) {
 
 export { 
     updateDjangoPlayer,
+    createSession,
     chat,
     saveBuildTask,
     triggerAIRequest

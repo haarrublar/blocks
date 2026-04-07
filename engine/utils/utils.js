@@ -1,4 +1,4 @@
-import axios from 'axios';
+const activeSessions = {};
 
 const trackingFlag = { 
     active: false,
@@ -12,7 +12,9 @@ const botOptions = {
     version: '1.21.1'
 };
 
+
 export { 
+    activeSessions,
     trackingFlag,
     botOptions
 };

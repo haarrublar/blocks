@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-f84nce=8&6(8i1g*@5y+_pc16k@3vw1_)4h@3vtv5psh93c5w5
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1',]
-
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:3000']
 
 # Application definition
 
@@ -45,7 +45,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -87,6 +87,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {
+            'timeout': 20, 
+        }
     }
 }
 
