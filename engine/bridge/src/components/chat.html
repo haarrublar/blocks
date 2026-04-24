@@ -1,0 +1,35 @@
+<header class="chat-header">
+  <div class="bot-info">
+    <div class="bot-status">
+      <i
+        class="fa-solid fa-chevron-left fa-lg"
+        id="back-to-search-session"
+        style="cursor: pointer"
+      ></i>
+      <div class="avatar-container">
+        <div class="bot-photo">
+          <img
+            src="./src/images/botConnected.png"
+            alt="bot avatar"
+            class="avatar-img"
+          />
+        </div>
+      </div>
+      <div class="bot-name">
+        <span class="player-name"></span>
+        <div style="display: flex; align-items: center">
+          <span class="status-box"></span>
+          <span style="margin-left: 4px"> connected </span>
+        </div>
+      </div>
+    </div>
+    <a class="call-btn">📞</a>
+  </div>
+</header>
+
+<main class="chat-frame" id="chat">
+  <div class="chat-history"></div>
+  <div class="input-area">
+    <input type="text" placeholder="Type here..." />
+  </div>
+</main>

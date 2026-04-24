@@ -1,4 +1,4 @@
-import { saveBuildTask, triggerAIRequest } from '../intelligence/api.js';
+import { postBuildProgress, postTriggerAIBuilding } from '../intelligence/api.js';
 
 function generateBuildPlan(bot) {
     bot.on('messagestr', (message, messagePosition, jsonMsg, sender, verified) => {
@@ -20,11 +20,11 @@ async function parseBuildPlanningRequest(bot,message, messagePosition, jsonMsg, 
             z: Math.round(playerPosition.z)
         }
             
-        // const taskId = await saveBuildTask(player, ppCoordinanates, commandType,instruction)
+        // const taskId = await postBuildProgress(player, ppCoordinanates, commandType,instruction)
         // if (taskId) {
         //     console.log(`[Pipeline] Task #${taskId} initialized. Sending to Claude`)
 
-        //     await triggerAIRequest(taskId, ppCoordinanates, instruction);
+        //     await postTriggerAIBuilding(taskId, ppCoordinanates, instruction);
 
         //     console.log(`[Pipeline] Task #${taskId} complete`)
         // }

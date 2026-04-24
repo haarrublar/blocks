@@ -6,7 +6,7 @@ import { botPersona } from "../intelligence/botMind.js";
 import { botVoice } from "./voiceManager.js";
 import { GUIDE } from "../intelligence/prompts.js";
 import { map } from "../utils/map.js";
-import { chat, createSession } from "../utils/api.js";
+import { postChatMessages, postCreateSession } from "../utils/api/apiPOST.js";
 
 function guideLogic(bot) {
   bot.on("messagestr", (message) => {
@@ -43,7 +43,7 @@ async function handleGuideLogic(bot, message) {
     console.log(instruction);
     
     if (!activeSessions[player]) {
-      const sessionUuid = await createSession(player);
+      const sessionUuid = await postCreateSession(player);
 
       if (sessionUuid) {
         activeSessions[player] = sessionUuid; 
@@ -55,11 +55,11 @@ async function handleGuideLogic(bot, message) {
 
     const sessionId = activeSessions[player];
     bot.currentSessionId = sessionId;
-    chat(sessionId, player, instruction);
+    postChatMessages(sessionId, player, instruction);
 
     if (!welcomedPlayers.has(player)) {
       const welcomeMsg = `Welcome to the guided tour ${player}!`;
-      bot.chat(welcomeMsg, false, sessionId);
+      bot.postChatMessages(welcomeMsg, false, sessionId);
       welcomedPlayers.add(player);
     }
 
@@ -69,7 +69,7 @@ async function handleGuideLogic(bot, message) {
 
     if (helpKeywords.some((keyword) => instruction.includes(keyword))) {
       const commandsMsg = `Commands: 'start' (full tour), 'move to' (pick a building), or 'continue' (next stop), 'question' (ask any question to the librarian)`;
-      bot.chat(commandsMsg, false, sessionId);
+      bot.postChatMessages(commandsMsg, false, sessionId);
       return;
     }
 
@@ -86,7 +86,7 @@ async function handleGuideLogic(bot, message) {
 
         const steps = Object.keys(map[selectedArea]);
         const selectedAreMsg = `Starting tour at ${selectedArea}. We will loop through all buildings!`;
-        bot.chat(selectedAreMsg, false, sessionId);
+        bot.postChatMessages(selectedAreMsg, false, sessionId);
         executeMove(bot, selectedArea, steps[stepIndex], sessionId);
       }
 
@@ -101,20 +101,20 @@ async function handleGuideLogic(bot, message) {
     ) {
       isWaitingForQuestion = false;
       const byeMsg = `You're very welcome, ${player}! Let me know if you need anything else.`;
-      bot.chat(byeMsg, false, sessionId);
+      bot.postChatMessages(byeMsg, false, sessionId);
       // botVoice("You are very welcome! Let me know if you need anything else.", "Samantha");
       return;
     }
 
     if (isWaitingForQuestion) {
       const introReasoningMsg = "Let me think about that...";
-      bot.chat(introReasoningMsg, true, sessionId);
+      bot.postChatMessages(introReasoningMsg, true, sessionId);
 
       const response = await botPersona(instruction, GUIDE);
       const reasoningMsg = `${introReasoningMsg} ${response.replace(/\n/g, " ")}`;
-      bot.chat(reasoningMsg, false, sessionId);
-      console.log("CALLING BOT.CHAT WITH:", reasoningMsg);
-      console.log("IS OVERRIDDEN:", bot.chat.toString().includes("silent"));
+      bot.postChatMessages(reasoningMsg, false, sessionId);
+      console.log("CALLING BOT.postChatMessages WITH:", reasoningMsg);
+      console.log("IS OVERRIDDEN:", bot.postChatMessages.toString().includes("silent"));
       // botVoice(response, 'Samantha');
       return;
     }
@@ -122,12 +122,12 @@ async function handleGuideLogic(bot, message) {
     if (instruction.includes("question")) {
       isWaitingForQuestion = true;
       const questionMsg = `${player} what questions do you have?`;
-      bot.chat(questionMsg, false, sessionId);
+      bot.postChatMessages(questionMsg, false, sessionId);
       return;
     } else if (instruction.includes("move to")) {
       isWaitingForSelection = true;
       const moveToMsg = `${player}, please select the building you would like to explore: ${areas.join(", ")}`;
-      bot.chat(moveToMsg, false, sessionId);
+      bot.postChatMessages(moveToMsg, false, sessionId);
     } else if (instruction.includes("start")) {
       isTourActive = true;
       areaIndex = 0;
@@ -135,7 +135,7 @@ async function handleGuideLogic(bot, message) {
       const currentAreaKey = areas[areaIndex];
       const steps = Object.keys(map[currentAreaKey]);
       const startMsg = "Starting the complete tour!";
-      bot.chat(startMsg, false, sessionId);
+      bot.postChatMessages(startMsg, false, sessionId);
       executeMove(bot, currentAreaKey, steps[stepIndex], sessionId);
     } else if (instruction.includes("continue") && isTourActive) {
       let currentAreaKey = areas[areaIndex];
@@ -148,7 +148,7 @@ async function handleGuideLogic(bot, message) {
 
         if (nextAreaIndex === startAreaIndex) {
           const completeTourMsg = `Tour complete! Have a nice day ${player}`;
-          bot.chat(completeTourMsg, false, sessionId);
+          bot.postChatMessages(completeTourMsg, false, sessionId);
           isTourActive = false;
           return;
         }
@@ -158,7 +158,7 @@ async function handleGuideLogic(bot, message) {
         currentAreaKey = areas[areaIndex];
         steps = Object.keys(map[currentAreaKey]);
         const MovingNextStopMsg = `Building finished. Moving to the next stop: ${map[currentAreaKey].detail}`;
-        bot.chat(MovingNextStopMsg, false, sessionId);
+        bot.postChatMessages(MovingNextStopMsg, false, sessionId);
       }
 
       executeMove(bot, currentAreaKey, steps[stepIndex], sessionId);
@@ -175,7 +175,7 @@ async function executeMove(bot, areaKey, stepKey, sessionId) {
     const detail = map[areaKey][stepKey]["detail"];
 
     bot.removeAllListeners("goal_reached");
-    bot.chat(`Heading to ${stepKey}...`, false, sessionId);
+    bot.postChatMessages(`Heading to ${stepKey}...`, false, sessionId);
 
     const defaultMove = new Movements(bot);
     defaultMove.canDig = false;

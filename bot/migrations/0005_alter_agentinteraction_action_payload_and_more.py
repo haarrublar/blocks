@@ -23,30 +23,30 @@ class Migration(migrations.Migration):
             field=models.TextField(blank=True, help_text='General LLM answer from the building instructions', null=True),
         ),
         migrations.CreateModel(
-            name='ChatSession',
+            name='postChatMessagesSession',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('started_at', models.DateTimeField(auto_now_add=True)),
                 ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sessions', to='bot.player')),
             ],
             options={
-                'verbose_name': 'Chat Session',
-                'verbose_name_plural': 'Chat Sessions',
+                'verbose_name': 'postChatMessages Session',
+                'verbose_name_plural': 'postChatMessages Sessions',
                 'ordering': ['started_at'],
             },
         ),
         migrations.CreateModel(
-            name='ChatMessages',
+            name='postChatMessagesMessages',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('content', models.TextField()),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
                 ('sender', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='messages', to='bot.player')),
-                ('session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='messages', to='bot.chatsession')),
+                ('session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='messages', to='bot.postChatMessagessession')),
             ],
             options={
-                'verbose_name': 'Chat Message',
-                'verbose_name_plural': 'Chat Messages',
+                'verbose_name': 'postChatMessages Message',
+                'verbose_name_plural': 'postChatMessages Messages',
                 'ordering': ['timestamp'],
             },
         ),

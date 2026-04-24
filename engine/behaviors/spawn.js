@@ -43,13 +43,13 @@ function startRadarLoop(bot, entity, name1, name2) {
           bot.pathfinder.setGoal(null);
           currentTask.isPaused = true;
           bot.lookAt(p1);
-          bot.chat("Waiting for you to catch up...");
+          bot.postChatMessages("Waiting for you to catch up...");
           console.log("Tour paused: Player out of range.");
         }
 
         else if (distance < RESUME_THRESHOLD && currentTask.isPaused) {
           currentTask.isPaused = false;
-          bot.chat("Great, let's continue.");
+          bot.postChatMessages("Great, let's continue.");
           executeMove(bot, currentTask.areaKey, currentTask.stepKey);
           console.log("Tour resumed.");
         }
@@ -59,7 +59,6 @@ function startRadarLoop(bot, entity, name1, name2) {
         bot.lookAt(entity.position.offset(0, entity.height, 0));
 
         if (!trackingFlag.inSpawnAlert) {
-          // Set flag FIRST before any async calls to prevent re-triggering
           trackingFlag.inSpawnAlert = true;
           botVoice(`Hello ${entity.username}! Welcome to the Library. Say "information" for a tour.`);
 
@@ -69,7 +68,6 @@ function startRadarLoop(bot, entity, name1, name2) {
         }
       } else {
         if (trackingFlag.inSpawnAlert) {
-          // Set flag FIRST before any async calls
           trackingFlag.inSpawnAlert = false;
           currentTask.areaKey = null;
           currentTask.stepKey = null;

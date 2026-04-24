@@ -1,8 +1,7 @@
 import axios from 'axios';
-import fs from 'fs';
-import { exec } from 'child_process';
 
-async function updateDjangoPlayer(username, isConnected, type) {
+
+async function postUpdatePStatus(username, isConnected, type) {
     const payload = {
         username: username,
         is_connected: isConnected,
@@ -16,7 +15,7 @@ async function updateDjangoPlayer(username, isConnected, type) {
     }
 };
 
-async function createSession(username) {
+async function postCreateSession(username) {
     const payload = {
         player:username,
     };
@@ -25,13 +24,12 @@ async function createSession(username) {
         console.log(`[Session Created] ${response.data.id}`);
         return response.data.id;
     } catch (error) {
-        const html = error.response?.data;
-        fs.writeFileSync('/tmp/django_error.html', typeof html === 'string' ? html : JSON.stringify(html, null, 2));
-        exec('open /tmp/django_error.html');
+        console.log(`[Django Error]:`, error.response?.data || error.message);
+        return null;
     }
 };
 
-async function chat(sessionId, username, message) {
+async function postChatMessages(sessionId, username, message) {
     const payload = {
         session:sessionId,
         sender: username,
@@ -41,13 +39,12 @@ async function chat(sessionId, username, message) {
         await axios.post('http://127.0.0.1:8000/bot/chat/', payload, { timeout: 10000 });
         console.log(`[Django Update]`);
     } catch (error) {
-        const html = error.response?.data;
-        fs.writeFileSync('/tmp/django_error.html', typeof html === 'string' ? html : JSON.stringify(html, null, 2));
-        exec('open /tmp/django_error.html');
+        console.log(`[Django Error]:`, error.response?.data || error.message);
+        return null;
     }
 };
 
-async function saveBuildTask(playerUsername, ppCoordinanates, commandType, message) {
+async function postBuildProgress(playerUsername, ppCoordinanates, commandType, message) {
     const payload = {
         player: playerUsername,
         coordinates: ppCoordinanates,
@@ -75,7 +72,7 @@ async function saveBuildTask(playerUsername, ppCoordinanates, commandType, messa
     }
 };
 
-async function triggerAIRequest(taskId, ppCoordinanates, instruction) {
+async function postTriggerAIBuilding(taskId, ppCoordinanates, instruction) {
     const payload = {
         task_id: taskId,
         coordinates: ppCoordinanates,
@@ -96,9 +93,9 @@ async function triggerAIRequest(taskId, ppCoordinanates, instruction) {
 
 
 export { 
-    updateDjangoPlayer,
-    createSession,
-    chat,
-    saveBuildTask,
-    triggerAIRequest
+    postUpdatePStatus,
+    postCreateSession,
+    postChatMessages,
+    postBuildProgress,
+    postTriggerAIBuilding
 };

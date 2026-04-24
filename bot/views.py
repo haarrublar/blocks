@@ -18,8 +18,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'
 @permission_classes([AllowAny])
 def player_view(request):
     if request.method == 'GET':
-        players = Player.objects.all()
-        serializer = PlayerSerializer(players, many=True)
+        queryset = Player.objects.all()
+        player = request.query_params.get('username')
+
+        if player:
+            queryset = queryset.filter(username=player)
+
+        serializer = PlayerSerializer(queryset, many=True)
         return Response(serializer.data)
 
     if request.method == 'POST':
@@ -74,11 +79,14 @@ def chat_messages_view(request):
         queryset = ChatMessages.objects.all()
         sender = request.query_params.get('sender')
         session = request.query_params.get('session')
+        date_param = request.query_params.get('date')
 
         if sender:
             queryset = queryset.filter(sender__username=sender)
         if session:
             queryset = queryset.filter(session__id=session)
+        if date_param:
+            queryset = queryset.filter(timestamp__date=date_param)
 
         serializer = ChatMessagesSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -127,4 +135,9 @@ def chat_session_view(request):
             return Response({"error": "Player not found"}, status=status.HTTP_404_NOT_FOUND)
     
     
-    
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def active_chat_dates_view(request):
+    dates = ChatMessages.objects.dates('timestamp','day')
+    return Response([d.strftime('%Y-%m-%d') for d in dates])
+
