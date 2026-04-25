@@ -17,9 +17,13 @@ class AgentInteractionAdmin(admin.ModelAdmin):
     
 @admin.register(ChatSession)
 class ChatSessionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'player', 'started_at') 
-    list_filter = ('player', 'started_at')
-    search_fields = ('player',)
+    list_display = ('id', 'display_participants', 'started_at') 
+    list_filter = ('participants__username', 'started_at')
+    search_fields = ('participants__username',)
+    def display_participants(self, obj):
+        return ", ".join([player.username for player in obj.participants.all()])
+    
+    display_participants.short_description = 'Participants'
     
 @admin.register(ChatMessages)
 class ChatMessagesAdmin(admin.ModelAdmin):

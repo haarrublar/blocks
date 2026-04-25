@@ -30,13 +30,15 @@ class AgentInteractionSerializer(serializers.ModelSerializer):
 
 
 class ChatSessionSerializer(serializers.ModelSerializer):
-    player = serializers.SlugRelatedField(
-        slug_field="username", queryset=Player.objects.all()
+    participants = serializers.SlugRelatedField(
+        many= True,
+        slug_field="username", 
+        queryset=Player.objects.all()
     )
 
     class Meta:
         model = ChatSession
-        fields = ["id", "player", "started_at"]
+        fields = ["id", "participants", "date", "started_at"]
 
 
 class ChatMessagesSerializer(serializers.ModelSerializer):

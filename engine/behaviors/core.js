@@ -1,26 +1,26 @@
 import { trackingFlag, botOptions } from "../utils/utils.js";
-import { postUpdatePStatus, postChatMessages } from "../utils/api/apiPOST.js";
+import { getOrCreateSession } from "../utils/sessionManager.js";
+import { postUpdatePStatus } from "../utils/api/apiPOST.js";
 import { activeSessions } from "../utils/utils.js";
 
 function setupCoreBehaviors(bot) {
 
     bot.once('spawn', () => {
         postUpdatePStatus(bot.username, true, 'B');
-
-        const originalpostChatMessages = bot.postChatMessages.bind(bot);
+        // const originalpostChatMessages = bot.postChatMessages.bind(bot);
         
-        bot.postChatMessages = (message, silent = false, sessionId = null) => {
-            const activeId = sessionId || bot.currentSessionId;
+        // bot.postChatMessages = (message, silent = false, sessionId = null) => {
+        //     const activeId = sessionId || bot.currentSessionId;
 
-            if (!silent) {
-                if (activeId) {
-                    postChatMessages(activeId, bot.username, message);
-                } else {
-                    console.warn(`[Sync Skip] No session ID for: "${message}"`);
-                }
-                originalpostChatMessages(message);
-            }
-        };
+        //     if (!silent) {
+        //         if (activeId) {
+        //             postChatMessages(activeId, bot.username, message);
+        //         } else {
+        //             console.warn(`[Sync Skip] No session ID for: "${message}"`);
+        //         }
+        //         originalpostChatMessages(message);
+        //     }
+        // };
     });
 
     bot.on('login', () => {
@@ -41,6 +41,9 @@ function setupCoreBehaviors(bot) {
 
     bot.on('playerJoined', async (player) => {
         if (player.username === bot.username) return; 
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        await getOrCreateSession(player.username, bot.username);
+        console.log(`[Session ready for ${player.username}]`);
         await postUpdatePStatus(player.username, true, 'H');
     });
 

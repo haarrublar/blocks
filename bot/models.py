@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 import uuid
 
 class Player(models.Model):
@@ -57,11 +58,13 @@ class ChatSession(models.Model):
         default=uuid.uuid4, 
         editable=False
     ) 
-    player = models.ForeignKey(
-        Player, 
-        on_delete=models.CASCADE, 
-        related_name='sessions',
+    participants = models.ManyToManyField(
+        Player,
+        related_name="chat_groups"
     )
+    date = models.DateField(
+        default=timezone.now,
+        null=True)
     started_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -70,7 +73,7 @@ class ChatSession(models.Model):
             ordering = ['started_at']
             
     def __str__(self):
-        return f"{self.session_id} ({self.player})"
+        return f"{self.session_id} ({self.participants})"
 
     
 class ChatMessages(models.Model):
@@ -82,7 +85,7 @@ class ChatMessages(models.Model):
     sender = models.ForeignKey(
         Player, 
         on_delete=models.CASCADE, 
-        related_name='messages',
+        related_name='sent_messages',
     )
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
