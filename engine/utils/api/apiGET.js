@@ -11,11 +11,11 @@ async function getChatMessages(filters = {}) {
     }
 }
 
-async function getPlayerConnection(botName) {
+async function getUsers(filters = {}) {
     try {
         const response = await axios.get('http://127.0.0.1:8000/bot/players/', {
-            params: { username: botName },
-            timeout: 2000
+            params: filters,
+            timeout: 10000
         });
         return response.data;
     } catch (error) {
@@ -31,6 +31,6 @@ async function getActiveDates() {
 
 export {
     getChatMessages,
-    getPlayerConnection,
+    getUsers,
     getActiveDates
 }

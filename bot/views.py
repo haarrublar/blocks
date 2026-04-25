@@ -20,9 +20,12 @@ def player_view(request):
     if request.method == 'GET':
         queryset = Player.objects.all()
         player = request.query_params.get('username')
+        player_type = request.query_params.get('player_type')
 
         if player:
             queryset = queryset.filter(username=player)
+        if player_type:
+            queryset = queryset.filter(player_type=player_type)
 
         serializer = PlayerSerializer(queryset, many=True)
         return Response(serializer.data)
