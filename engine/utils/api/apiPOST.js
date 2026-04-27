@@ -1,6 +1,6 @@
 import axios from "axios";
 
-async function postUpdatePStatus(username, isConnected, type) {
+async function updatePlayerStatus(username, isConnected, type) {
 	const payload = {
 		username: username,
 		is_connected: isConnected,
@@ -18,33 +18,23 @@ async function postUpdatePStatus(username, isConnected, type) {
 	}
 }
 
-async function postCreateSession(participants) {
-	const payload = {
-		participants,
-	};
-	try {
-		const response = await axios.post(
-			"http://127.0.0.1:8000/bot/chat/sessions/",
-			payload,
-			{ timeout: 10000 },
-		);
-		console.log(`[Session Created] ${response.data.id}`);
-		return response.data.id;
-	} catch (error) {
-		if (error.response?.headers["content-type"]?.includes("text/html")) {
-			const fs = await import("fs");
-			fs.writeFileSync("django_error.html", error.response.data);
-			console.log(
-				"[Django Error]: saved to django_error.html — open in browser",
-			);
-		} else {
-			console.log(`[Django Error]:`, error.response?.data || error.message);
-		}
-		return null;
-	}
+async function createSession(participants) {
+    const payload = { participants };
+    try {
+        const response = await axios.post(
+            "http://127.0.0.1:8000/bot/chat/sessions/",
+            payload,
+            { timeout: 10000 }
+        );
+        console.log(`[Session Created] ${response.data.id}`);
+        return response.data.id;
+    } catch (error) {
+        console.error("[Session Error]:", error.response?.data || error.message);
+        return null;
+    }
 }
 
-async function postChatMessages(sessionId, username, message) {
+async function chat(sessionId, username, message) {
 	const payload = {
 		session: sessionId,
 		sender: username,
@@ -61,7 +51,7 @@ async function postChatMessages(sessionId, username, message) {
 	}
 }
 
-async function postBuildProgress(
+async function buildProgress(
 	playerUsername,
 	ppCoordinanates,
 	commandType,
@@ -91,14 +81,13 @@ async function postBuildProgress(
 			);
 			return null;
 		}
-		return taskId;
 	} catch (error) {
 		console.log(`[Django Error]:`, error.response?.data || error.message);
 		return null;
 	}
 }
 
-async function postTriggerAIBuilding(taskId, ppCoordinanates, instruction) {
+async function triggerAIBuilding(taskId, ppCoordinanates, instruction) {
 	const payload = {
 		task_id: taskId,
 		coordinates: ppCoordinanates,
@@ -120,9 +109,9 @@ async function postTriggerAIBuilding(taskId, ppCoordinanates, instruction) {
 }
 
 export {
-	postUpdatePStatus,
-	postCreateSession,
-	postChatMessages,
-	postBuildProgress,
-	postTriggerAIBuilding,
+	updatePlayerStatus,
+	createSession,
+	buildProgress,
+	triggerAIBuilding,
+	chat
 };

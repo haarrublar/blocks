@@ -24,13 +24,17 @@ async function getUsers(filters = {}) {
     }
 }
 
-async function getActiveDates() {
-    const response = await axios.get('http://127.0.0.1:8000/bot/chat/sessions/active/');
-    return response.data; 
+async function getSessions(participants) {
+  const response = await axios.get('http://127.0.0.1:8000/bot/chat/sessions/', {
+    params: { participants: participants } 
+  });
+  return response.data; 
 }
+
+
 
 export {
     getChatMessages,
     getUsers,
-    getActiveDates
+    getSessions
 }

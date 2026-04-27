@@ -1,7 +1,7 @@
 import { getChatMessages } from "../../../utils/api/apiGET.js";
 
-export async function refreshChat(dateStr) {
-  const messages = await getChatMessages({ date: dateStr });
+export async function refreshChat(sessionId) {
+  const messages = await getChatMessages({ session: sessionId });
   const chatHistory = document.querySelector('.chat-history');
   if (messages && messages.length > 0) {
     renderMessages(messages);

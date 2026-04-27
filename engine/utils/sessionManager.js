@@ -1,4 +1,4 @@
-import { postCreateSession } from "./api/apiPOST.js";
+import { createSession } from "./api/apiPOST.js";
 
 const sessions = {};
 
@@ -9,7 +9,7 @@ export async function getOrCreateSession(playerUsername, botUsername) {
     return sessions[key];
   }
 
-  const sessionId = await postCreateSession([playerUsername, botUsername]);
+  const sessionId = await createSession([playerUsername, botUsername]);
   if (sessionId) {
     sessions[key] = sessionId;
   }

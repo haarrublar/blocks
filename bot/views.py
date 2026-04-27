@@ -127,7 +127,6 @@ def chat_session_view(request):
 
             session, created = ChatSession.objects.get_or_create(
                 date=today_date,
-                # started_at__range=(today_start, today_end),
                 defaults={'started_at': today_date}
             )
 
@@ -141,9 +140,3 @@ def chat_session_view(request):
         except Player.DoesNotExist:
             return Response({"error": "Player not found"}, status=404)
 
-
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def active_chat_dates_view(request):
-    dates = ChatMessages.objects.dates("timestamp", "day")
-    return Response([d.strftime("%Y-%m-%d") for d in dates])

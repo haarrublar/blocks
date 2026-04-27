@@ -1,7 +1,4 @@
-import { initCalendar } from "./calendar.js";
-import { refreshChat } from "./chat.js";
 import { getConnection } from "./userConnetion.js";
-import { getActiveDates } from "../../../utils/api/apiGET.js";
 import { navigateTo, initNavigation } from "./router.js";
 
 async function loadComponent(id, url) {
@@ -25,17 +22,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       backBtn.addEventListener("click", () => navigateTo("calendar"));
 
     await getConnection();
-    const activeDates = await getActiveDates();
-    const todayStr = new Date().toISOString().split("T")[0];
-    await refreshChat(todayStr);
+    // const activeDates = await getActiveDates([state.currentUser,state.selectedBot]);
+    // const todayStr = new Date().toISOString().split("T")[0];
+    // await refreshChat(todayStr);
 
-    initCalendar(async (dateStr) => {
-      await refreshChat(dateStr);
-      await getConnection();
-      navigateTo("chat");
-    }, activeDates);
+    // initCalendar(async (dateStr) => {
+    //   await refreshChat(dateStr);
+    //   await getConnection();
+    //   navigateTo("chat");
+    // }, activeDates);
 
-    navigateTo("calendar");
+    navigateTo("lobby");
   } catch (err) {
     console.error("Init error:", err);
   }

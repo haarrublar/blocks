@@ -8,5 +8,4 @@ urlpatterns = [
     path('players/', player_view, name="players"),
     path('chat/', chat_messages_view, name="chat"),
     path('chat/sessions/', chat_session_view, name="sessions"),
-    path('chat/sessions/active/', active_chat_dates_view, name="active-sessions"),
 ]

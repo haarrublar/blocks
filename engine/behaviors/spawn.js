@@ -43,13 +43,13 @@ function startRadarLoop(bot, entity, name1, name2) {
           bot.pathfinder.setGoal(null);
           currentTask.isPaused = true;
           bot.lookAt(p1);
-          bot.postChatMessages("Waiting for you to catch up...");
+          bot.chat("Waiting for you to catch up...");
           console.log("Tour paused: Player out of range.");
         }
 
         else if (distance < RESUME_THRESHOLD && currentTask.isPaused) {
           currentTask.isPaused = false;
-          bot.postChatMessages("Great, let's continue.");
+          bot.chat("Great, let's continue.");
           executeMove(bot, currentTask.areaKey, currentTask.stepKey);
           console.log("Tour resumed.");
         }

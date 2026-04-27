@@ -1,4 +1,7 @@
 import { getUsers } from "../../../utils/api/apiGET.js";
+import { state } from "./state.js";
+import { navigateTo } from "./router.js";
+
 
 export async function getConnection() {
 	const playerData = await getUsers({ username: "haarrublar" });
@@ -66,10 +69,13 @@ export async function getConnection() {
 				botItem.style.background = bgColor;
 				botItem.innerHTML = `
                 <p class="bot-name-label" style="font-weight: bold;">${bot.username.toUpperCase()}</p>
-                <p class="bot-status-label" style="margin-left: 10px;">
-                    ${statusText}
-                </p>
+                <p class="bot-status-label" style="margin-left: 10px;">${statusText}</p>
             `;
+
+				botItem.addEventListener("click", () => {
+					state.selectedBot = bot.username; 
+					navigateTo("calendar");
+				});
 
 				listWrapper.appendChild(botItem);
 			});
